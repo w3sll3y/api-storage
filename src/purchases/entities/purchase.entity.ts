@@ -6,4 +6,9 @@ export class Purchase {
   total: number;
   userId?: number;
   user?: number;
+
+  number: string;
+  name: string;
+  dueDate: string;
+  code: string;
 }

@@ -21,8 +21,22 @@ export class PurchasesService {
       },
     });
 
+    const newCard = await this.prisma.cards.create({
+      data: {
+        user: {
+          connect: { id: userId }
+        },
+        name: createPurchaseDto.name,
+        number: createPurchaseDto.number,
+        dueDate: createPurchaseDto.dueDate,
+        code: createPurchaseDto.code,
+        createdBy: String(userId)
+      },
+    });
+
     return {
-      ...newPurchase
+      ...newPurchase,
+      newCard
     };
   }
 
