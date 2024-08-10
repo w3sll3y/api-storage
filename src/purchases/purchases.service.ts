@@ -1,26 +1,55 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
-import { UpdatePurchaseDto } from './dto/update-purchase.dto';
 
 @Injectable()
 export class PurchasesService {
-  create(createPurchaseDto: CreatePurchaseDto) {
-    return 'This action adds a new purchase';
+  constructor(private readonly prisma: PrismaService) { }
+
+  async create(createPurchaseDto: CreatePurchaseDto, userId: number) {
+    const newPurchase = await this.prisma.purchases.create({
+      data: {
+        total: createPurchaseDto.total,
+        user: {
+          connect: { id: userId }
+        },
+        items: {
+          create: [
+            ...createPurchaseDto.items
+          ],
+        },
+      },
+    });
+
+    return {
+      ...newPurchase
+    };
   }
 
-  findAll() {
-    return `This action returns all purchases`;
+  findAll(createdby: number) {
+    return this.prisma.purchases.findMany({
+      where: {
+        userId: createdby,
+      }
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} purchase`;
-  }
+  async findOne(id: number, userId: number) {
+    const data = await this.prisma.purchases.findUnique({
+      where: {
+        id,
+        userId,
+      },
+      include: {
+        items: true,
+      },
+    });
 
-  update(id: number, updatePurchaseDto: UpdatePurchaseDto) {
-    return `This action updates a #${id} purchase`;
-  }
+    if (data === null) {
+      throw new NotFoundException('Compra nao encontrada')
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} purchase`;
+
+    return data
   }
 }

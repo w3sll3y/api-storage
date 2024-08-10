@@ -2,33 +2,25 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { PurchasesService } from './purchases.service';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { UpdatePurchaseDto } from './dto/update-purchase.dto';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { User } from 'src/user/entities/user.entity';
 
 @Controller('purchases')
 export class PurchasesController {
-  constructor(private readonly purchasesService: PurchasesService) {}
+  constructor(private readonly purchasesService: PurchasesService) { }
 
   @Post()
-  create(@Body() createPurchaseDto: CreatePurchaseDto) {
-    return this.purchasesService.create(createPurchaseDto);
+  create(@Body() createPurchaseDto: CreatePurchaseDto, @CurrentUser() user: User) {
+    return this.purchasesService.create(createPurchaseDto, user.id);
   }
 
   @Get()
-  findAll() {
-    return this.purchasesService.findAll();
+  findAll(@CurrentUser() user: User) {
+    return this.purchasesService.findAll(user.id);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.purchasesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePurchaseDto: UpdatePurchaseDto) {
-    return this.purchasesService.update(+id, updatePurchaseDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.purchasesService.remove(+id);
+  findOne(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.purchasesService.findOne(+id, user.id);
   }
 }
