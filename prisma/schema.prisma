@@ -37,9 +37,10 @@ model Item {
 }
 
 model Purchases {
-  id     Int    @id @default(autoincrement())
-  items  Item[]
-  total  Int
-  userId Int
-  user   User   @relation(fields: [userId], references: [id])
+  id      Int    @id @default(autoincrement())
+  items   Item[]
+  total   Int
+  userId  Int
+  zipcode String @default("")
+  user    User   @relation(fields: [userId], references: [id])
 }

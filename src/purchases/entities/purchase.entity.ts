@@ -11,4 +11,5 @@ export class Purchase {
   name: string;
   dueDate: string;
   code: string;
+  zipcode: string;
 }

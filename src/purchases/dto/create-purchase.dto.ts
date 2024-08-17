@@ -20,4 +20,7 @@ export class CreatePurchaseDto extends Purchase {
 
   @IsString()
   dueDate: string;
+
+  @IsString()
+  zipcode: string;
 }

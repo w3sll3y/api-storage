@@ -18,6 +18,7 @@ export class PurchasesService {
             ...createPurchaseDto.items
           ],
         },
+        zipcode: createPurchaseDto.zipcode
       },
     });
 
